@@ -27,30 +27,46 @@ class Board extends React.Component {
     super (props)
     this.state = {
       squares: Array(9).fill(null),
+      gamerNext: true,
     }
-    console.log(this.state.squares)
+
+    
+    
   }
 
 
   handleClick(i){
     
     const squares = this.state.squares.slice();
-    squares[i]= 'X'
-    console.log(squares)
-    this.setState({squares: squares})
+    // console.log('this.state.gamerNext: ', this.state.gamerNext);
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i]= this.state.gamerNext ? 'X' : 'O';
+    // console.log(squares)
+    this.setState({
+      squares: squares,
+      gamerNext: !this.state.gamerNext,
+    })
   }
   
   renderSquare(i) {
-    
     return (<Square
                 value={this.state.squares[i]}
+                iii={i}
                 onClick={() => this.handleClick(i)}
             />
     );
   }
 
   render() {
-    const status = 'Next player: X';
+    const winner = calculateWinner(this.state.squares);
+    let status;
+    if (winner) {
+      status = 'برنده: ' + winner;
+    } else {
+      status = 'پلیر کنونی: ' + (this.state.gamerNext ? 'X' : 'O');
+    }
 
     return (
       <div>
@@ -93,6 +109,37 @@ class Game extends React.Component {
       </div>
     );
   }
+}
+
+
+function calculateWinner(squares) {
+  console.log('squares: ', squares);
+
+  
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  // console.log('lines: ', lines.length);
+  for (let i = 0; i < lines.length; i++) {
+    console.log(lines[i])
+    const [a, b, c] = lines[i];
+    console.log('a:', a , '|', 'squares[a]: ', squares[a]);
+    console.log('b:', b , '|', 'squares[b]: ', squares[b]);
+    console.log('c:', c , '|', 'squares[c]: ', squares[c]);
+    
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
 }
 
 // ========================================

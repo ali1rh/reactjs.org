@@ -49,3 +49,7 @@ body {
     margin-left: 20px;
   }
   
+  .winnerBlock{
+    background-color: green;
+    color: white;
+  }

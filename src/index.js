@@ -9,15 +9,35 @@ import './index.css';
  *              Square
  */
 
-function Square(props) {
+// function Square(props) {
+//     return (
+//       <button
+//         className="square"
+//         onClick={props.onClick}
+//       >
+//         {props.value}
+//       </button>
+//     );
+// }
+
+class Square extends React.Component {
+
+
+  render(){
+
+
+
+    // console.log(this.props)
+    const splitClass =  "square";
     return (
       <button
-        className="square"
-        onClick={props.onClick}
+        className= {`${splitClass} ${this.props.winnerBlock}`}
+        onClick={this.props.onClick}
       >
-        {props.value}
+        {this.props.value}
       </button>
     );
+  }
 }
 
 
@@ -32,9 +52,29 @@ class Board extends React.Component {
   
 
   renderSquare(i) {
+    var winnerBlock = this.props.winnerBlock;
+    // console.log('winnerBlock:', winnerBlock)
+    
+
+    // if(winnerBlock){
+    //   for (let i = 0; i < winnerBlock.length; i++) {
+    //     // console.log(lines[i])
+    //     console.log(winnerBlock[i]);
+    //   }
+    // }
+    let classWinnerBox = null;
+    if(winnerBlock){
+      if(winnerBlock.includes(i)){
+        classWinnerBox = "winnerBlock";
+      }
+    }
+    
+
+
+    
     return (<Square
                 value={this.props.squares[i]}
-                iii={i}
+                winnerBlock={classWinnerBox}
                 onClick={() => this.props.onClick(i)}
             />
     );
@@ -77,7 +117,8 @@ class Game extends React.Component {
         squares: Array(9).fill(null)
       }],
       stepNumber: 0,
-      gamerNext: true
+      gamerNext: true,
+      winnerBlock: []
     }
     
   }
@@ -87,11 +128,16 @@ class Game extends React.Component {
     const history = this.state.history.slice(0, this.state.stepNumber + 1)
     const current = history[history.length -1];
     const squares = current.squares.slice()
-    if (calculateWinner(squares) || squares[i]) {
+    if (calculateWinner(squares).status) {
       return;
     }
+    if (squares[i]){
+      // remove click again
+      return;
+    }
+
     squares[i]= this.state.gamerNext ? 'X' : 'O';
-    // console.log(squares)
+    
     this.setState({
       history: history.concat([{
         squares: squares,
@@ -99,6 +145,7 @@ class Game extends React.Component {
       stepNumber: history.length,
       gamerNext: !this.state.gamerNext,
     })
+    
     
   }
   
@@ -109,10 +156,20 @@ class Game extends React.Component {
     })
   }
 
+  alibd(i, j){
+    // console.log('hi', j)
+      return(<Board 
+        winnerBlock= {j}
+        squares ={i}
+        onClick={(i)=> this.handleClick(i)}
+      />);
+  }
+  
   render() {
     const history = this.state.history;
     const current = history[this.state.stepNumber];
     const gameStatus = calculateWinner(current.squares)
+    // console.log('gameStatus.winnerBlock: ', gameStatus.winnerBlock)
 
     const moves = history.map((step, move) => {
       // console.log('step: ', step);
@@ -128,24 +185,22 @@ class Game extends React.Component {
       )
     })
     let status;
-    if (gameStatus === "X" || gameStatus === "O") {
-      status = 'برنده: ' + gameStatus;
+    if (gameStatus.status === "X" || gameStatus.status === "O") {
+      status = 'برنده: ' + gameStatus.status + this.state.winnerBlock;
     }
-    else if(gameStatus === "end"){
+    else if(gameStatus.status === "end"){
       status = 'بازی بدون نتیجه بود';
     }
     else {
       status = 'پلیر کنونی: ' + (this.state.gamerNext ? 'X' : 'O');
     }
-    console.log(this.state.history)
+    // console.log(this.state.history)
 
+    console.log('this.state.winnerBlock: ', this.state.winnerBlock)
     return (
       <div className="game">
         <div className="game-board">
-          <Board 
-            squares ={current.squares}
-            onClick={(i)=> this.handleClick(i)}
-          />
+          {this.alibd(current.squares, gameStatus.winnerBlock)}
         </div>
         <div className="game-info">
           <div>{status}</div>
@@ -182,8 +237,11 @@ function calculateWinner(squares) {
     // console.log('c:', c , '|', 'squares[c]: ', squares[c]);
     
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      console.log(squares[a]);
-      return squares[a];
+      // console.log(squares[a]);
+      return {
+        status: squares[a],
+        winnerBlock: [a, b, c]
+      }
     }
     
     
@@ -191,9 +249,13 @@ function calculateWinner(squares) {
   }
   if(squares.includes(null) === false){
     console.log('end');
-    return "end";
+    return {
+      status: 'end',
+    }
   }
-  return null;
+  return {
+    status: null,
+  }
 }
 
 // ========================================

@@ -4,7 +4,10 @@ import './index.css';
 
 
 
-
+/**
+ * SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS
+ *              Square
+ */
 
 function Square(props) {
     return (
@@ -19,58 +22,27 @@ function Square(props) {
 
 
 
+/**
+ * BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+ *              Board
+ */
 
 
 class Board extends React.Component {
   
-  constructor (props){
-    super (props)
-    this.state = {
-      squares: Array(9).fill(null),
-      gamerNext: true,
-    }
 
-    
-    
-  }
-
-
-  handleClick(i){
-    
-    const squares = this.state.squares.slice();
-    // console.log('this.state.gamerNext: ', this.state.gamerNext);
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    squares[i]= this.state.gamerNext ? 'X' : 'O';
-    // console.log(squares)
-    this.setState({
-      squares: squares,
-      gamerNext: !this.state.gamerNext,
-    })
-  }
-  
   renderSquare(i) {
     return (<Square
-                value={this.state.squares[i]}
+                value={this.props.squares[i]}
                 iii={i}
-                onClick={() => this.handleClick(i)}
+                onClick={() => this.props.onClick(i)}
             />
     );
   }
 
   render() {
-    const winner = calculateWinner(this.state.squares);
-    let status;
-    if (winner) {
-      status = 'برنده: ' + winner;
-    } else {
-      status = 'پلیر کنونی: ' + (this.state.gamerNext ? 'X' : 'O');
-    }
-
     return (
       <div>
-        <div className="status">{status}</div>
         <div className="board-row">
           {this.renderSquare(0)}
           {this.renderSquare(1)}
@@ -92,19 +64,92 @@ class Board extends React.Component {
 }
 
 
-
-
+/**
+ * GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG
+ *              game
+ */
 
 class Game extends React.Component {
+  constructor(props){
+    super(props)
+    this.state ={
+      history: [{
+        squares: Array(9).fill(null)
+      }],
+      stepNumber: 0,
+      gamerNext: true
+    }
+    
+  }
+
+  
+  handleClick(i){
+    const history = this.state.history.slice(0, this.state.stepNumber + 1)
+    const current = history[history.length -1];
+    const squares = current.squares.slice()
+    if (calculateWinner(squares) || squares[i]) {
+      return;
+    }
+    squares[i]= this.state.gamerNext ? 'X' : 'O';
+    // console.log(squares)
+    this.setState({
+      history: history.concat([{
+        squares: squares,
+      }]),
+      stepNumber: history.length,
+      gamerNext: !this.state.gamerNext,
+    })
+    
+  }
+  
+  jumpTo(step){
+    this.setState({
+      stepNumber: step,
+      gamerNext: (step % 2) === 0
+    })
+  }
+
   render() {
+    const history = this.state.history;
+    const current = history[this.state.stepNumber];
+    const gameStatus = calculateWinner(current.squares)
+
+    const moves = history.map((step, move) => {
+      // console.log('step: ', step);
+      // console.log('move: ', move);
+      
+      const desc = move ?
+      'Go to move #' + move :
+      'Go to game start';
+      return (
+        <li key={move}>
+          <button onClick={() => this.jumpTo(move)}>{desc}</button>
+        </li>
+      )
+    })
+    let status;
+    if (gameStatus === "X" || gameStatus === "O") {
+      status = 'برنده: ' + gameStatus;
+    }
+    else if(gameStatus === "end"){
+      status = 'بازی بدون نتیجه بود';
+    }
+    else {
+      status = 'پلیر کنونی: ' + (this.state.gamerNext ? 'X' : 'O');
+    }
+    console.log(this.state.history)
+
     return (
       <div className="game">
         <div className="game-board">
-          <Board />
+          <Board 
+            squares ={current.squares}
+            onClick={(i)=> this.handleClick(i)}
+          />
         </div>
         <div className="game-info">
-          <div>{/* status */}</div>
-          <ol>{/* TODO */}</ol>
+          <div>{status}</div>
+          <ol>{moves}</ol>
         </div>
       </div>
     );
@@ -113,8 +158,11 @@ class Game extends React.Component {
 
 
 function calculateWinner(squares) {
-  console.log('squares: ', squares);
-
+  // console.log('squares: ', squares);
+  
+  if(squares.includes(null) == false){
+    return "end";
+  }
   
   const lines = [
     [0, 1, 2],
@@ -129,15 +177,17 @@ function calculateWinner(squares) {
 
   // console.log('lines: ', lines.length);
   for (let i = 0; i < lines.length; i++) {
-    console.log(lines[i])
+    // console.log(lines[i])
     const [a, b, c] = lines[i];
-    console.log('a:', a , '|', 'squares[a]: ', squares[a]);
-    console.log('b:', b , '|', 'squares[b]: ', squares[b]);
-    console.log('c:', c , '|', 'squares[c]: ', squares[c]);
+    // console.log('a:', a , '|', 'squares[a]: ', squares[a]);
+    // console.log('b:', b , '|', 'squares[b]: ', squares[b]);
+    // console.log('c:', c , '|', 'squares[c]: ', squares[c]);
     
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
       return squares[a];
     }
+    
+
   }
   return null;
 }

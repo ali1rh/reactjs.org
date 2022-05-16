@@ -119,8 +119,8 @@ class Game extends React.Component {
       // console.log('move: ', move);
       
       const desc = move ?
-      'Go to move #' + move :
-      'Go to game start';
+      'رفتن به مرحله #' + move :
+      'پیمایش به اول بازی';
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
@@ -160,9 +160,7 @@ class Game extends React.Component {
 function calculateWinner(squares) {
   // console.log('squares: ', squares);
   
-  if(squares.includes(null) == false){
-    return "end";
-  }
+
   
   const lines = [
     [0, 1, 2],
@@ -184,10 +182,16 @@ function calculateWinner(squares) {
     // console.log('c:', c , '|', 'squares[c]: ', squares[c]);
     
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      console.log(squares[a]);
       return squares[a];
     }
     
+    
 
+  }
+  if(squares.includes(null) === false){
+    console.log('end');
+    return "end";
   }
   return null;
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 import ReactDOM from "react-dom/client";
 
 function MyForm() {
-  const [name, setName] = useState("");
+  const [inputs, setName] = useState("");
 
   const handleSubmit  = (event) => {
     event.preventDefault();
@@ -16,7 +16,7 @@ function MyForm() {
         id="inputName"
         name="name"
         type="text"
-        value={name}
+        value={inputs.name || ""}
         onChange={(e) => setName(e.target.value)}
       />
       <br />
@@ -25,7 +25,7 @@ function MyForm() {
         id="inputLastName"
         name="lastName"
         type="text"
-        value={name}
+        value={inputs.lastName}
         onChange={(e) => setName(e.target.value)}
       />
       <button type="submit">click plz</button>

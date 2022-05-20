@@ -1,0 +1,165 @@
+import ReactDOM from "react-dom/client";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./pages/Layout";
+import Home from "./pages/Home";
+import Blogs from "./pages/Blogs";
+import Contact from "./pages/Contact";
+import NoPage from "./pages/NoPage";
+import "./index.css";
+
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="blogs" element={<Blogs />} />
+          <Route path="contact" element={<Contact />} />
+          <Route path="*" element={<NoPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+/*
+import { useState } from "react";
+import ReactDOM from "react-dom/client";
+
+function MyForm() {
+  const [inputs, setName] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log("name: " + event.target.inputName.value + "| lastName: " + event.target.inputLastName.value);
+    console.log('inputs: ', inputs);
+    
+  };
+
+  const handleChanges = (event) => {
+    // console.log(event);
+    const name = event.target.name;
+    const value = event.target.value;
+    console.log('name: ', name);
+    console.log('value: ', value);
+    // console.log('setName:', setName);
+    setName({...inputs, [name]: value})
+    
+    
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="inputName">name: </label>
+      <input
+        id="inputName"
+        name="name"
+        type="text"
+        value={inputs.name || ""}
+        onChange={handleChanges}
+      />
+      <br />
+      <label htmlFor="inputLastName">lastName: </label>
+      <input
+        id="inputLastName"
+        name="lastName"
+        type="text"
+        value={inputs.lastName || ""}
+        onChange={handleChanges}
+      />
+      <button type="submit">click plz</button>
+    </form>
+  );
+}
+
+*/
+
+// function Sub(car) {
+//   return <li>I am a { car.brand }</li>;
+// }
+
+// function Car() {
+//   const cars = [
+//     {id: 1 , brand: 'Ford'},
+//     {id: 2 , brand: 'BMW'},
+//     {id: 3 , brand: 'Audi'},
+// ];
+//   return (
+//     <>
+//       <h1>Who lives in my garage?</h1>
+//       <ul>
+//         {cars.map((car) => <Sub brand={car.brand} key={car.id}/>)}
+//       </ul>
+//     </>
+//   );
+// }
+
+// function Car() {
+//   const bidF = (event) => {
+//     event.preventDefault();
+//     console.log('event: ', event)
+//   }
+//   return (
+//     <form onSubmit={bidF}>
+//       <label htmlFor="inputName" dir="auto">Enter your name:
+//         <input type="text" id="inputName" placeholder="search" dir="auto"/>
+//       </label>
+//       <button type="submit"   >clickOnMe</button>
+//     </form>
+//   )
+// }
+
+// function bidF(){
+//   return console.log('hi')
+// }
+
+// function Car(){
+//     const bidF = (props) => {
+//       return console.log('bidF' , props)
+//     }
+//     var bidar = `i am bidar.app `;
+//     return(
+//       <>
+//         <h1>hello {bidar}</h1>
+//         {/* <button onClick={bidF}>کلیک کن لاشی</button> */}
+//         <button onClick={(event)=>{bidF({ data: "asshole", eventClick: event})}}>کلیک کن لاشی</button>
+//       </>
+//     )
+
+// }
+
+// class Car extends React.Component{
+//   constructor(){
+//     super()
+//     this.state= {
+//       color: "red",
+//     }
+//   }
+//   componentDidMount(){
+//     console.log('componentDidMount')
+//   }
+//   bidF = () => {
+//     console.log('bidF')
+//     this.setState({
+//       color: "grrrreeen"
+//     })
+//   }
+
+//   render() {
+
+//     var bidar = `i am bidar.app ${this.state.color}`;
+//     return(
+//       <>
+//         <h1>hello {bidar}</h1>
+//         <button onClick={this.bidF}>کلیک کن لاشی</button>
+//       </>
+//     )
+//   }
+// }
+
+// const root = ReactDOM.createRoot(document.getElementById("root"));
+// root.render(<Car />);

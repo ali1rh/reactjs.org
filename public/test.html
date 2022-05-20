@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+  <body>
+    <p id="demo">asdf</p>
+
+    <script>
+      const vehicleOne = {
+        brand: 'Ford',
+        model: 'Mustang',
+        type: 'car',
+        year: 2021,
+        color: 'red',
+        registration: {
+          city: 'Houston',
+          state: 'Texas',
+          country: 'USA'
+        }
+      }
+
+      myVehicle(vehicleOne)
+
+      function myVehicle({ model, registration: { state } }) {
+        const message = 'My ' + model + ' is registered in ' + state + '.';
+
+        document.getElementById("demo").innerHTML = message;
+      }
+    </script>
+  </body>
+</html>
